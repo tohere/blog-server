@@ -1,0 +1,123 @@
+const express = require('express')
+const router = express.Router()
+const ArticleCtrl = require('../controllers/ArticleCtrl')
+const multer = require('multer') // 处理图片上传
+const Classify = require('../models/Classify')
+
+// 通过 filename 属性定制
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './static/images');    // 保存的路径，备注：需要自己创建
+  },
+  filename: function (req, file, cb) {
+    const filename = Date.now() + file.originalname // 通过时间戳保证相同的图片也能上传多次
+    // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
+    cb(null, filename)
+  }
+})
+
+const upload = multer({ storage: storage })
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-19 22:55:30 
+ * @Desc: 单图上传 
+ */
+router.post('/uploadimg', upload.single('file'), (req, res) => {
+  const file = req.file.path.replace(/\\/g, '/')
+  console.log(file)
+  res.send({ url: 'http://localhost:3000/' + file})
+})
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-20 19:29:17 
+ * @Desc: 获取全部文章数据 
+ */
+router.get('/', (req, res) => {
+  console.log(req.query)
+  if (req.query.classify && req.query.classify !== '/') {
+    // 通过分类名查询数据 
+    ArticleCtrl.findByClassify(req.query.classify, (err, articles) => {
+      if (err) {
+        return res.json({ msg: 'get fail' })
+      }
+      res.json({ articles })
+    })
+    return
+  }
+  if (!req.query.id) {
+    ArticleCtrl.getArticles((err, ret) => {
+      if (err) {
+        return res.json({ msg: 'get fail' })
+      }
+      res.json({ articles: ret })
+    })
+    return
+  }
+  ArticleCtrl.getOneArticle(req.query.id, (err, article) => {
+    if (err) {
+      return res.json({msg: 'get fail'})
+    }
+    res.json({article})
+  })
+})
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-20 17:03:33 
+ * @Desc: 文章发布 
+ */
+router.post('/publish', (req, res) => {
+  const articleInfos = req.body
+  ArticleCtrl.postArticle(articleInfos.id, articleInfos.title, articleInfos.content, articleInfos.classify, (err, ret) => {
+    if (err) {
+      res.json({ msg: 'publish fail'})
+    } else {
+      res.json({msg: 'publish success'})
+    }
+  })
+})
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-20 17:03:43 
+ * @Desc: 添加分类 
+ */
+router.post('/classify', (req, res) => {
+  new Classify({
+    classify: req.body.classify
+  }).save((err) => {
+    console.log(err)
+    if (err) {
+      return res.json({msg: 'add fail'})
+    }
+    res.json({msg: 'add success'})
+  })
+})
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-20 17:36:48 
+ * @Desc: 展示分类 
+ */
+router.get('/classify', (req, res) => {
+  Classify.find().then(classifies => res.json({ classifies}))
+})
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-20 21:06:11 
+ * @Desc: 增加浏览量 
+ */
+router.get('/addscan', (req, res) => {
+  ArticleCtrl.addScan(req.query.id, (err, ret) => {
+    if (err) {
+      return res.json({msg: 'add scan fail'})
+    }
+    res.json({msg: 'add scan success'})
+  })
+})
+
+
+exports.router = router

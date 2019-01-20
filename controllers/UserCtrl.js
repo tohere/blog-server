@@ -5,11 +5,11 @@ const User = require('../models/User')
  * @param {String} username 要查询的用户名
  * @returns {String | Object} err || user 返回null或者查询到的用户信息
  */
-exports.findByName = async (username) => {
-  return await User.findOne({ username }, (err, user) => {
+exports.findByName = (username, callback) => {
+  User.find({ username }, (err, user) => {
     if (err) {
-      return err
+      return callback(err, null)
     }
-    return user
+    callback(null, user)
   })
 }

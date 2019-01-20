@@ -3,14 +3,15 @@ const app = express()
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser') // 处理post请求体
 const users = require('./routes/users') // 引入用户相关中间件
+const articles = require('./routes/acticles') // 引入文章相关中间件
+const path = require('path')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-// 连接数据库
-const db = mongoose.connect('mongodb://localhost:27017/users', { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost:27017/myBlog', { useNewUrlParser: true })
 // 连接失败
 mongoose.connection.on('error', (err) => {
   console.log('数据库连接失败' + err)
@@ -33,10 +34,25 @@ app.all('*', function (req, res, next) {
   res.header("Content-Type", "application/json;charset=utf-8")
   next()
 })
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-19 23:30:36 
+ * @Desc: 开放static目录 
+ */
+app.use('/static', express.static(path.join(__dirname, 'static')))
+
 /**
  * 处理用户相关逻辑
  */
-app.use('/user', users.router)
+app.use('/users', users.router)
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-19 21:55:16 
+ * @Desc: 文章相关中间件 
+ */
+app.use('/articles', articles.router)
 
 app.listen(3000, () => {
   console.log('服务启动成功')
