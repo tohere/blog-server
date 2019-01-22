@@ -1,15 +1,11 @@
 const mongoose = require('mongoose')
 
 const ArticleSchema = new mongoose.Schema({
-  userId: String,
   title: {
     required: true,
     type: String
   },
-  content: {
-    required: true,
-    type: String
-  },
+  content: String,
   // 文章分类
   classify: {
     required: true,

@@ -1,10 +1,11 @@
 const express = require('express')
 const app = express()
+const path = require('path')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser') // 处理post请求体
 const users = require('./routes/users') // 引入用户相关中间件
-const articles = require('./routes/acticles') // 引入文章相关中间件
-const path = require('path')
+const articles = require('./routes/articles') // 引入文章相关中间件
+const classifies = require('./routes/classifies') // 引入分类相关
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -45,14 +46,21 @@ app.use('/static', express.static(path.join(__dirname, 'static')))
 /**
  * 处理用户相关逻辑
  */
-app.use('/users', users.router)
+app.use('/users', users)
 
 /** 
  * @Author: tomorrow-here 
  * @Date: 2019-01-19 21:55:16 
  * @Desc: 文章相关中间件 
  */
-app.use('/articles', articles.router)
+app.use('/articles', articles)
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-21 21:08:06 
+ * @Desc: 处理分类相关 
+ */
+app.use('/classifies', classifies)
 
 app.listen(3000, () => {
   console.log('服务启动成功')

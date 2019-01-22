@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const ArticleCtrl = require('../controllers/ArticleCtrl')
 const multer = require('multer') // 处理图片上传
-const Classify = require('../models/Classify')
 
 // 通过 filename 属性定制
 const storage = multer.diskStorage({
@@ -68,41 +67,16 @@ router.get('/', (req, res) => {
  * @Date: 2019-01-20 17:03:33 
  * @Desc: 文章发布 
  */
-router.post('/publish', (req, res) => {
+router.post('/', (req, res) => {
   const articleInfos = req.body
-  ArticleCtrl.postArticle(articleInfos.id, articleInfos.title, articleInfos.content, articleInfos.classify, (err, ret) => {
+  console.log(req.body)
+  ArticleCtrl.postArticle(articleInfos.title, articleInfos.content, articleInfos.classify, (err, ret) => {
     if (err) {
       res.json({ msg: 'publish fail'})
     } else {
       res.json({msg: 'publish success'})
     }
   })
-})
-
-/** 
- * @Author: tomorrow-here 
- * @Date: 2019-01-20 17:03:43 
- * @Desc: 添加分类 
- */
-router.post('/classify', (req, res) => {
-  new Classify({
-    classify: req.body.classify
-  }).save((err) => {
-    console.log(err)
-    if (err) {
-      return res.json({msg: 'add fail'})
-    }
-    res.json({msg: 'add success'})
-  })
-})
-
-/** 
- * @Author: tomorrow-here 
- * @Date: 2019-01-20 17:36:48 
- * @Desc: 展示分类 
- */
-router.get('/classify', (req, res) => {
-  Classify.find().then(classifies => res.json({ classifies}))
 })
 
 /** 
@@ -120,4 +94,34 @@ router.get('/addscan', (req, res) => {
 })
 
 
-exports.router = router
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-22 21:24:28 
+ * @Desc: 模糊查询查询文章标题 
+ */
+router.get('/search', (req, res) => {
+  console.log(req.query)
+  ArticleCtrl.findTitle(req.query.txt, (err, ret) => {
+    if (err) {
+      return res.json({msg: 'search fail'})
+    }
+    res.json({ msg: 'search success', articles: ret })
+  })
+})
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-22 21:59:33 
+ * @Desc: 删除某一篇文章 
+ */
+router.delete('/', (req, res) => {
+  console.log(req.body)
+  ArticleCtrl.delArticle(req.body.id, (err, ret) => {
+    if (err) {
+      return res.json({msg: 'delete fail'})
+    }
+    res.json({msg: 'delete success'})
+  })
+})
+
+module.exports = router
