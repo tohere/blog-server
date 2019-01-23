@@ -7,11 +7,22 @@ const tokenCtrl = require('../utils/token')
  * @Author: tomorrow-here 
  * @Date: 2019-01-20 19:30:29 
  * @Desc: 所有文章查询获取 并通过时间降序，并限制每页显示10条
+ * @param {Number} page 当前页码
  */
-exports.getArticles = (callback) => {
-  Article.find({}).sort({ pubTime: -1 }).limit(10).exec((err, ret) => {
-    callback(err, ret)
-  })
+// 注意：此处给自己挖了一个坑，page默认值应该从0开始或者取page - 1
+exports.getArticles = (page = 1, callback) => {
+  Article.find({})
+    .skip((page - 1) * 10)
+    .limit(10)
+    .sort({ pubTime: -1 })
+    .exec((err, ret, arr) => {
+      Article.find()
+        .countDocuments()
+        .exec((err1, count) => {
+          console.log(err, ret, count)
+          callback(err, ret, count)
+        })
+    })
 }
 
 /** 
@@ -69,8 +80,13 @@ exports.addScan = (id, callback) => {
  * @Desc: 通过分类名称查询数据 并限制10条数据 按时间降序
  * @param {String} classify 分类名
  */
-exports.findByClassify = (classify, callback) => {
-  Article.find({ classify }).sort({ pubTime: -1 }).limit(10).exec((err, ret) => {
+exports.findByClassify = (classify, page = 1, callback) => {
+  Article.find({ classify })
+    .skip((page - 1) * 10)
+    .limit(10)
+    .sort({ pubTime: -1 })
+    .exec((err, ret) => {
+      console.log(ret)
     callback(err, ret)
   })
 }
@@ -99,3 +115,23 @@ exports.delArticle = (id, callback) => {
     callback(err, ret)
   })
 }
+
+/** 
+ * @Author: tomorrow-here 
+ * @Date: 2019-01-23 21:10:36 
+ * @Desc: 查询7天内的文章访问量 
+ */
+exports.findTimeArticles = (callback) => {
+  const date = new Date()
+  const old = date.setDate(date.getDate() - 7)
+  console.log(old)
+  Article.find({
+    "pubTime": {
+      $gte: old,
+      $lte: Date.now()
+    }
+  }, (err, ret) => {
+    callback(err, ret)
+  })
+}
+

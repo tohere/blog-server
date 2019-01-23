@@ -34,31 +34,31 @@ router.post('/uploadimg', upload.single('file'), (req, res) => {
  * @Desc: 获取全部文章数据 
  */
 router.get('/', (req, res) => {
-  console.log(req.query)
   if (req.query.classify && req.query.classify !== '/') {
     // 通过分类名查询数据 
-    ArticleCtrl.findByClassify(req.query.classify, (err, articles) => {
+    ArticleCtrl.findByClassify(req.query.classify, req.query.page, (err, articles, count) => {
       if (err) {
         return res.json({ msg: 'get fail' })
       }
-      res.json({ articles })
+      res.json({ articles, count })
     })
     return
   }
   if (!req.query.id) {
-    ArticleCtrl.getArticles((err, ret) => {
+    ArticleCtrl.getArticles(req.query.page, (err, ret, count) => {
+      console.log(ret)
       if (err) {
         return res.json({ msg: 'get fail' })
       }
-      res.json({ articles: ret })
+      res.json({ articles: ret, count })
     })
     return
   }
-  ArticleCtrl.getOneArticle(req.query.id, (err, article) => {
+  ArticleCtrl.getOneArticle(req.query.id, req.query.page, (err, article, count) => {
     if (err) {
       return res.json({msg: 'get fail'})
     }
-    res.json({article})
+    res.json({ article, count})
   })
 })
 
@@ -121,6 +121,15 @@ router.delete('/', (req, res) => {
       return res.json({msg: 'delete fail'})
     }
     res.json({msg: 'delete success'})
+  })
+})
+
+router.get('/times', (req, res) => {
+  ArticleCtrl.findTimeArticles((err, ret) => {
+    if (err) {
+      return res.json({msg: 'find fail'})
+    }
+    res.json({msg: 'find success', articles: ret})
   })
 })
 
