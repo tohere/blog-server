@@ -19,7 +19,6 @@ exports.getArticles = (page = 1, callback) => {
       Article.find()
         .countDocuments()
         .exec((err1, count) => {
-          console.log(err, ret, count)
           callback(err, ret, count)
         })
     })
@@ -33,6 +32,7 @@ exports.getArticles = (page = 1, callback) => {
  */
 exports.getOneArticle = (id, callback) => {
   Article.findById(id, (err, ret) => {
+    console.log(ret)
     callback(err, ret)
   })
 }
@@ -49,7 +49,6 @@ exports.postArticle = (title, content, classify, callback) => {
     content,
     classify
   }).save((error, ret) => {
-    console.log(error, 'ret')
     if (error) {
       return callback(error, null)
     }
@@ -86,7 +85,6 @@ exports.findByClassify = (classify, page = 1, callback) => {
     .limit(10)
     .sort({ pubTime: -1 })
     .exec((err, ret) => {
-      console.log(ret)
     callback(err, ret)
   })
 }
@@ -124,7 +122,6 @@ exports.delArticle = (id, callback) => {
 exports.findTimeArticles = (callback) => {
   const date = new Date()
   const old = date.setDate(date.getDate() - 7)
-  console.log(old)
   Article.find({
     "pubTime": {
       $gte: old,

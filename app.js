@@ -36,12 +36,23 @@ app.all('*', function (req, res, next) {
   next()
 })
 
+app.get('/', (req, res) => {
+  res.render('index.html')
+})
+
 /** 
  * @Author: tomorrow-here 
  * @Date: 2019-01-19 23:30:36 
  * @Desc: 开放static目录 
  */
 app.use('/static', express.static(path.join(__dirname, 'static')))
+
+// app.use((req, res, next) => {
+//   console.log(req.url)
+//   if (req.url.includes('users')) {
+//     console.log('ok')
+//   }
+// })
 
 /**
  * 处理用户相关逻辑

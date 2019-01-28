@@ -18,21 +18,23 @@ router.post('/login', async (req, res) => {
     if (err) {
       UserCtrl.findByName(userinfo.username, (err, user) => {
         // 如果ret存在，说明用户名存在，将密码加密之后和数据库中的进行比对
+        console.log(user)
         if (err) {
-          return res.json({ msg: '用户名或密码错误！' })
+          return res.json({ status: 1, msg: '用户名或密码错误！' })
         }
         userinfo.password = md5(userinfo.password + md5Key)
-        if (user[0].password === userinfo.password) {
+        console.log(user)
+        if (user.password === userinfo.password) {
           // 登录成功，生成token返回给前端
-          const token = tokenTool.createToken({ id: user[0]._id, username: user[0].username })
-          return res.json({ msg: '登录成功', token })
+          const token = tokenTool.createToken({ id: user._id, username: user.username })
+          return res.json({ status: 0, msg: '登录成功', token })
         } else {
-          return res.json({ mag: '用户名或密码错误！' })
+          return res.json({ status: 1, msg: '用户名或密码错误！' })
         }
       })
       return
     }
-    return res.send({ msg: '登录成功!', token: tokenTool.createToken({ id: decoded.id, username: decoded.username }) })
+    return res.send({ status: 0, msg: '登录成功!', token: tokenTool.createToken({ id: decoded.id, username: decoded.username }) })
   })
 })
 

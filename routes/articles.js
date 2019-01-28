@@ -24,7 +24,6 @@ const upload = multer({ storage: storage })
  */
 router.post('/uploadimg', upload.single('file'), (req, res) => {
   const file = req.file.path.replace(/\\/g, '/')
-  console.log(file)
   res.send({ url: 'http://localhost:3000/' + file})
 })
 
@@ -46,7 +45,6 @@ router.get('/', (req, res) => {
   }
   if (!req.query.id) {
     ArticleCtrl.getArticles(req.query.page, (err, ret, count) => {
-      console.log(ret)
       if (err) {
         return res.json({ msg: 'get fail' })
       }
@@ -54,11 +52,11 @@ router.get('/', (req, res) => {
     })
     return
   }
-  ArticleCtrl.getOneArticle(req.query.id, req.query.page, (err, article, count) => {
+  ArticleCtrl.getOneArticle(req.query.id, (err, article) => {
     if (err) {
       return res.json({msg: 'get fail'})
     }
-    res.json({ article, count})
+    res.json({ article})
   })
 })
 
@@ -69,7 +67,6 @@ router.get('/', (req, res) => {
  */
 router.post('/', (req, res) => {
   const articleInfos = req.body
-  console.log(req.body)
   ArticleCtrl.postArticle(articleInfos.title, articleInfos.content, articleInfos.classify, (err, ret) => {
     if (err) {
       res.json({ msg: 'publish fail'})
@@ -100,7 +97,6 @@ router.get('/addscan', (req, res) => {
  * @Desc: 模糊查询查询文章标题 
  */
 router.get('/search', (req, res) => {
-  console.log(req.query)
   ArticleCtrl.findTitle(req.query.txt, (err, ret) => {
     if (err) {
       return res.json({msg: 'search fail'})
@@ -115,7 +111,6 @@ router.get('/search', (req, res) => {
  * @Desc: 删除某一篇文章 
  */
 router.delete('/', (req, res) => {
-  console.log(req.body)
   ArticleCtrl.delArticle(req.body.id, (err, ret) => {
     if (err) {
       return res.json({msg: 'delete fail'})

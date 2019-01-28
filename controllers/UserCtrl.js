@@ -6,7 +6,7 @@ const User = require('../models/User')
  * @returns {String | Object} err || user 返回null或者查询到的用户信息
  */
 exports.findByName = (username, callback) => {
-  User.find({ username }, (err, user) => {
+  User.findOne({ username }, (err, user) => {
     if (err) {
       return callback(err, null)
     }
