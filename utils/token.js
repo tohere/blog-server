@@ -18,7 +18,7 @@ exports.createToken = ({ id, username }) => {
     id,
     username
   }, secret, {
-      expiresIn: 60 * 60 //秒到期时间
+      expiresIn: 60 * 60 * 2 // 到期时间
     })
 }
 

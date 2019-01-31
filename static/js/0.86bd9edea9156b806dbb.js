@@ -1,2 +1,0 @@
-webpackJsonp([0],{y6zN:function(t,e,n){"use strict";function u(t){return t>10?t:"0"+t}e.a=function(t){var e=(t=new Date(t)).getFullYear(),n=u(t.getMonth()+1),r=u(t.getDate()),o=u(t.getHours()),a=u(t.getMinutes()),c=u(t.getSeconds());return e+"-"+n+"-"+r+" "+o+":"+a+":"+c}}});
-//# sourceMappingURL=0.86bd9edea9156b806dbb.js.map
