@@ -36,6 +36,7 @@ router.get('/', (req, res) => {
   if (req.query.classify && req.query.classify !== '/') {
     // 通过分类名查询数据 
     ArticleCtrl.findByClassify(req.query.classify, req.query.page, (err, articles, count) => {
+      console.log(count)
       if (err) {
         return res.json({ msg: 'get fail' })
       }

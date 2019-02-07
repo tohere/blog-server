@@ -85,8 +85,12 @@ exports.findByClassify = (classify, page = 1, callback) => {
     .limit(10)
     .sort({ pubTime: -1 })
     .exec((err, ret) => {
-    callback(err, ret)
-  })
+      Article.find({ classify })
+        .countDocuments()
+        .exec((err1, count) => {
+          callback(err, ret, count)
+        })
+    })
 }
 
 /** 
