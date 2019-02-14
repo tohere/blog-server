@@ -1,7 +1,7 @@
 const express = require('express') // 引入express
 const router = express.Router() // 创建路由
 const md5 = require('md5') // 对用户密码进行加密处理
-const md5Key = 'LscAL1R^nX93!@i9Fe049#*R*35MRkfC!Eg&PWXxg*v6!rKtoIcou%TLO66#YlXF5uCezW&L@#kbxV*O2o%zC' // md5密钥
+const md5Key = 'YLw&k5K8JQqA$KnkDSwvBxv3nfxLptSwQzJ6gYVGV$CRcflD&jrgoc^' // md5密钥
 
 const UserCtrl = require('../controllers/UserCtrl') // 引入用户相关控制器
 const tokenTool = require('../utils/token')

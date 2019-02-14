@@ -6,7 +6,7 @@ const multer = require('multer') // 处理图片上传
 // 通过 filename 属性定制
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './static/images');    // 保存的路径，备注：需要自己创建
+    cb(null, '/static/images');    // 保存的路径，备注：需要自己创建
   },
   filename: function (req, file, cb) {
     const filename = Date.now() + file.originalname // 通过时间戳保证相同的图片也能上传多次

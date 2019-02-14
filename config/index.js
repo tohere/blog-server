@@ -1,3 +1,3 @@
 module.exports = {
-  keys: '&*z1fobPjKA!HUb5kgP^*UChOB%2zAh64okeNL1RhO&NvT&hUWZI9emYeh4b$Ve!YGFG*0EaEGFn&uz3l0JP2' // 密钥
+  keys: '7Wo14q49$ND%DFO9b#Tz1I9^PXP#b0dg6Z3r7M7TNwR&Ngdic' // 密钥
 }
